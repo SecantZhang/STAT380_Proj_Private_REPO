@@ -5,9 +5,95 @@ output: html_notebook
 ---
 
 ```{r}
-
+library(tidyverse)
+library(lubridate)
 ```
 
-# Introduction
 
-## 
+# I - Introduction
+
+
+
+# II - Data Preprocessing
+
+### Load datasets
+
+```{r}
+dt_issues = read.csv("data/issues_data.csv", header=TRUE)
+dt_star = read.csv("data/stargazers.csv", header=TRUE)
+dt_user = read.csv("data/users_data.csv", header=TRUE)
+```
+
+### Saniety Check
+
+```{r}
+# Inspect the dataset by taking the first 10 rows of each dataset. 
+dt_issues %>% head(10)
+dt_star %>% head(10)
+dt_user %>% head(10)
+```
+
+### Data Cleaning
+
+```{r}
+# User dataset cleaning
+str(dt_user)
+
+# Cleaning
+dt_user_cld <- dt_user %>% 
+    # Drop unused features. 
+    select(-X_id, -avatar_url, -events_url, -followers_url, -following_url, 
+           -gists_url, -gravatar_id, -html_url, -node_id, -public_gists, -received_events_url, 
+           -repos_url, -site_admin, -starred_url, -subscriptions_url, -type) %>%
+    # Convert the time/date features to relative format. 
+    mutate(created_at = lubridate::ymd_hms(created_at), 
+           updated_at = lubridate::ymd_hms(updated_at)) %>%
+    # Convert various factor type features to string type. 
+    mutate(bio = as.character(bio), 
+           blog = as.character(blog), 
+           company = as.character(company), 
+           email = as.character(email), 
+           location = as.character(location), 
+           login = as.character(login), 
+           name = as.character(name), 
+           organizations_url = as.character(organizations_url),
+           
+    )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
