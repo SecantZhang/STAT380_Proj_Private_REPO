@@ -16,7 +16,7 @@ output: html_notebook
 
 *Description: Report includes meaningful contributions from (at least) two different data sources that are JOINED for the analysis*
 
-(A) .Rmd Line number(s) for join operation: 
+(A) .Rmd Line number(s) for join operation: ```43```
 
 
 
@@ -25,19 +25,19 @@ output: html_notebook
 *Description: Clear demonstration of proficiency should include proper use of 5 out of the following 6 topics from class: (+) general purpose data wrangling--e.g., filter, select mutate, summarise, arrange, group_by, etc. (+) spread & gather to stack/unstack variables (+) regular expressions (+) user-defined functions (+) loops and control flow (+) vectorized functions like the `apply` family, `purrr::map` or `dplyr::do`*
 
 (A) .Rmd Line number(s) for an example of general purpose data wrangling: 
-
+```39-61```
 
 (B) .Rmd Line number(s) for a spread & gather (or equivalent): 
-
+```243```
 
 (C) .Rmd Line number(s) for use of regular expressions: 
-
+```94-113```, ```127-142```
 
 (D) .Rmd Line number(s) for use of user-defined functions: 
-
+```89```, ```122```
 
 (E) .Rmd Line number(s) for use of loops and/or control flow: 
-
+```153```
 
 (F) .Rmd Line number(s) for use of vectorized functions: 
 
@@ -47,13 +47,13 @@ output: html_notebook
 *Description: Clear demonstration of proficiency should include at least FOUR distinct and useful data visualizations that are relevant to purpose of the analysis. Include at least one effective visualization with layered data from distinct data structures--e.g., a `geom` that plots data from a secondary data frame AND another must effectively display many--3 or more--variables. All plots must demonstrate good plotting practices.*
 
 (A) .Rmd Line number(s) for visualization with layered data from distinct data structures--e.g., a `geom` that plots data from a secondary data frame: 
-
+```241-251```
 
 (B) .Rmd Line number(s) for visualization displaying many--3 or more--variables (A, B, C, & D must be four **different** plots): 
-
+```259-269```
 
 (C) .Rmd Line number(s) for a third visualization: 
-
+```285-290```
 
 (D) .Rmd Line number(s) for a third visualization: 
 

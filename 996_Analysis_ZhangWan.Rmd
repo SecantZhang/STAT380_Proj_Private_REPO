@@ -33,19 +33,23 @@ dt_star %>% head(10)
 dt_user %>% head(10)
 ```
 
-### Data Cleaning
+### Data Cleaning & Wrangling
 
 ```{r}
 # User dataset cleaning
 # Cleaning
 dt_user_cld <- dt_user %>% 
+    # Join the issues dataset. 
+    left_join(dt_issues, by="X_id") %>%
+    select(bio, blog, company, created_at.x, followers, following, hireable, location, login, name, public_gists, 
+           type, closed_at, updated_at.x, email, organizations_url, public_repos) %>%
     # Drop unused features. 
-    select(-X_id, -avatar_url, -events_url, -followers_url, -following_url, 
-           -gists_url, -gravatar_id, -html_url, -node_id, -public_gists, -received_events_url, 
-           -repos_url, -site_admin, -starred_url, -subscriptions_url, -type) %>%
+    # select(-X_id, -avatar_url, -events_url, -followers_url, -following_url, 
+    #        -gists_url, -gravatar_id, -html_url, -node_id, -public_gists, -received_events_url, 
+    #        -repos_url, -site_admin, -starred_url, -subscriptions_url, -type) %>%
     # Convert the time/date features to relative format. 
-    mutate(created_at = lubridate::ymd_hms(created_at), 
-           updated_at = lubridate::ymd_hms(updated_at)) %>%
+    mutate(created_at = lubridate::ymd_hms(created_at.x), 
+           updated_at = lubridate::ymd_hms(updated_at.x)) %>%
     # Convert various factor type features to string type. 
     mutate(bio = as.character(bio), 
            blog = as.character(blog), 
@@ -54,15 +58,16 @@ dt_user_cld <- dt_user %>%
            location = as.character(location), 
            login = as.character(login), 
            name = as.character(name), 
-           organizations_url = as.character(organizations_url),
-           url = as.character(url))
+           organizations_url = as.character(organizations_url))
 
 str(dt_user_cld)
 ```
 
 # III - Data Analysis
 
-## 1. What Companies are those programmers in?
+## 1. Supporters' Profile
+
+### 1. What Companies/Universities are those programmers from?
 
 ```{r}
 company_info <- dt_user_cld %>% 
@@ -83,11 +88,12 @@ print(company_info$company)
 # Define the company aggregation function. 
 company_aggregation <- function(name) {
     # Make case insensitive. 
+    orig_name <- name
     name <- toupper(name)
     # Detect pattern and change the company name accordingly. 
     if (grepl("百度|BAIDU|AIDU", name)) {
         target_name <- "Baidu"
-    } else if (grepl("ENCENT", "腾讯", "TENCENT", name)) {
+    } else if (grepl("ENCENT|腾讯|TENCENT", name)) {
         target_name <- "Tencent"
     } else if (grepl("LIBABA|淘宝|AOBAO|LIPAY|阿里巴巴|LIYUN|阿里云", name)) {
         target_name <- "Alibaba"
@@ -106,25 +112,191 @@ company_aggregation <- function(name) {
     } else if (grepl("DIDI|滴滴|嘀嘀", name)) {
         target_name <- "DiDi"
     } else {
-        target_name <- name
+        target_name <- orig_name
+    }
+    
+    return (target_name)
+}
+
+# Define the education aggregation function. 
+education_aggregation <- function(name) {
+    # Make case insensitive
+    orig_name <- name
+    name <- toupper(name)
+    # Detect pattern and change the education accordingly. 
+    if (grepl("HEJIANG|ZJU|浙江大学|浙大", name)) {
+        target_name <- "Zhejiang University"
+    } else if (grepl("SINGHUA|清华", name)) {
+        target_name <- "Tsinghua University"
+    } else if (grepl("SHANGHAI JIAO TONG|SJTU|上海交大|上海交通", name)) {
+        target_name <- "Shanghai Jiao Tong University"
+    } else if (grepl("UESTC|电子科大|电子科技", name)) {
+        target_name <- "University of Electronic Science and Technology of China"
+    } else if (grepl("USTC|中科大|中国科学技术", name)) {
+        target_name <- "University of Science and Technology of China"
+    } else if (grepl("FUDAN|复旦", name)) {
+        target_name <- "Fudan University"
+    } else if (grepl("ARBIN|哈", name)) {
+        target_name <- "Harbin Institute of Technology"
+    } else if (grepl("BUPT|北邮|北京邮电", name)) {
+        target_name <- "Beijing University of Post and Telecommunications"
+    } else {
+        target_name <- NA
     }
     
     return (target_name)
 }
 
 # Aggregating disparse companies. 
-company_info_agg <- company_info %>% 
-    mutate(company_agg = company_aggregation(company))
-    
+agg_companies <- rep(NA, nrow(company_info))
+agg_education <- rep(NA, nrow(company_info))
+for (i in 1:nrow(company_info)) {
+    agg_companies[i] <- company_aggregation(company_info$company[i])
+    agg_education[i] <- education_aggregation(company_info$company[i])
+}
+company_info_agg <- cbind(company_info, agg_companies, agg_education)
 ```
 
 
+```{r}
+# Show the top ten companies which have the most number of developer support 996.icu
+company_info_agg %>% group_by(agg_companies) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count)) %>% 
+    head(10)
+
+# Show what universities are those developers from. 
+company_info_agg %>% group_by(agg_education) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count)) %>%
+    filter(!is.na(agg_education)) %>%
+    head(10)
+    
+```
+
+### 2. What cities are those developers from? 
 
 
+```{r}
+# 
+# Define the function for aggregating the cities. 
+city_aggregation <- function(name) {
+    # Make case insensitive. 
+    orig_name <- name
+    name <- toupper(name)
+    # Detect pattern and change the education accordingly. 
+    if (grepl("EIJING|北京", name)) {
+        target_name <- "Beijing"
+    } else if (grepl("HANGHAI|上海", name)) {
+        target_name <- "Shanghai"
+    } else if (grepl("ANGZHOU|杭州", name)) {
+        target_name <- "Hangzhou"
+    } else if (grepl("UANGZHOU|广州", name)) {
+        target_name <- "Hangzhou"
+    } else if (grepl("HENGDU|成都", name)) {
+        target_name <- "Chengdu"
+    } else if (grepl("ANJING|南京", name)) {
+        target_name <- "Nanjing"
+    } else if (grepl("INGAPORE|新加坡", name)) {
+        target_name <- "Singapore"
+    } else if (grepl("HONG KONG|香港|HK", name)) {
+        target_name <- "Hong Kong"
+    } else if (grepl("UHAN|武汉", name)) {
+        target_name <- "Wuhan"
+    } else {
+        target_name <- orig_name
+    }
+    
+    return (target_name)
+}
 
+city_info <- dt_user_cld %>% 
+    group_by(location) %>%
+    summarise(count = n()) %>%
+    filter(location != "", 
+           location != "China") %>%
+    arrange(desc(count))
 
+agg_cities <- rep(NA, nrow(city_info))
+for (i in 1:nrow(city_info)) {
+    agg_cities[i] <- city_aggregation(city_info$location[i])
+} 
 
+city_info_agg <- cbind(city_info, agg_cities)
+```
 
+```{r}
+# Showing the top ten cities that have the most developer support 996.icu
+city_info_agg %>% group_by(agg_cities) %>%
+    summarise(count = n()) %>%
+    filter(agg_cities != "", 
+           agg_cities != "China") %>%
+    arrange(desc(count)) %>%
+    head(10)
+```
+
+### 3. Summary Statistics of Supporters' Related Information. 
+
+```{r}
+# Summary statistics of supporters' github account. 
+dt_user_cld %>% select(followers, following, public_repos) %>%
+    gather(stat_type, number, followers, following, public_repos) %>%
+#    filter(number <= 10000) %>%
+    ggplot(aes(x = factor(stat_type), y = log(number))) +
+    geom_jitter(color = "grey", width = .2) +
+    geom_boxplot(alpha=0.6) +
+    stat_summary(fun.y = "mean", geom = "point", size = 5, color = "red", shape = 15) +
+    labs(x = "Summary Statistics of Followers, Following and Public Repos, Mean (red)", 
+         y = "Relative Values") +
+    ggtitle("Summary Statistics Plot (Log Transformed)")
+    
+    
+```
+
+### 4. Distribution Plot of Supporters' Information. 
+
+```{r}
+# Distribution graph of supporter's followers under 50. 
+dist_ggplot <- dt_user_cld %>% filter(followers <= 50, following <= 50, public_repos <= 50) %>%
+    ggplot() +
+    geom_bar(aes(x = followers), col="black", fill="black", alpha=0.5) +
+    geom_bar(aes(x = following), col="black", fill="red", alpha=0.5) +
+    geom_bar(aes(x = public_repos), col="black", fill="blue", alpha=0.5)
+    
+dist_ggplot + 
+    labs(x = "Followers (Black), Following (Red) and Public Repositories (Blue)", 
+         y = "Count") +
+    ggtitle("Distribution Plot")
+```
+
+### 5. Distribution Plot of Supporters' Registration Duration. 
+
+```{r}
+# Calculate supporters' number of days since registered the github account. 
+today <- lubridate::ymd("2019-04-29")
+dt_user_cld <- dt_user_cld %>%
+    # Calculate the duration and convert it to numerical value. 
+    mutate(duration = as.numeric(as.duration(interval(created_at, today)), "days"))
+
+# Showing average registration years. 
+print(mean(dt_user_cld$duration)/365)
+
+# Distribution plot of registration days. 
+dt_user_cld %>% ggplot(aes(x = duration/365)) + 
+    geom_histogram(col="black", fill="grey", alpha = 0.7) +
+    geom_vline(xintercept = mean(dt_user_cld$duration)/365, linetype = "dotted", color = "red", size = 1.5) +
+    labs(y = "Frequency / Count", 
+         x = "Number of Years Since Registration") +
+    ggtitle("Distribution Plot of Supporters' Registration Duration")
+
+dist_reg
+```
+
+## 2. Main Questions/Issues of Supporters
+
+```{r}
+
+```
 
 
 
