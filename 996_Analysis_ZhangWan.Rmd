@@ -350,6 +350,20 @@ summary(user_pca)
 plotly()
 ```
 
+```{r}
+# Supervised Learning: regression
+# y = dt_user_cld$followers
+# x = dt_user_cld$following, public_repos, duration
+
+lm <- lm(followers ~ following+public_repos+duration, data = dt_user_cld)
+summary(lm)
+# Because adjusted R-squared is very low, at 0.01508. We decided to further check linear assumptions by plotting it.
+
+plot(lm)
+# From the plots, we can tell that this data violated various linear assumption. Therefore, linear regression wouldn't work with this dataset.
+```
+
+
 
 ## 3. Main Questions/Issues of Supporters
 
