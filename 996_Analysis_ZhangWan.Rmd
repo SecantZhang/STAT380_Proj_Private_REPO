@@ -345,9 +345,6 @@ user_stat %>% head(10)
 user_pca <- prcomp(user_stat, center=TRUE, scale.=TRUE)
 print(user_pca)
 summary(user_pca)
-
-# Visualization using 3 principle components PCA
-plotly()
 ```
 
 
