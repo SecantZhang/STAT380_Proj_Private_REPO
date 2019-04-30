@@ -5,7 +5,10 @@ output: html_notebook
 ---
 
 ```{r}
-# Load necessary packages. 
+# always clean up R environment
+rm(list = ls())
+
+# load all packages here
 # Basic Data Analysis & Wrangling
 library(tidyverse)
 library(lubridate)
