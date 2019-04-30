@@ -16,6 +16,9 @@ library(jiebaR)
 
 # Library for generating word cloud. 
 library(wordcloud)
+
+# Library for visualizing the 3d plot. 
+library(plotly)
 ```
 
 
@@ -98,9 +101,6 @@ company_info <- dt_user_cld %>%
 
 # Display the top companies. 
 company_info
-
-# Display the company list.
-print(company_info$company)
 ```
 
 
@@ -310,7 +310,32 @@ dt_user_cld %>% ggplot(aes(x = duration/365)) +
     ggtitle("Distribution Plot of Supporters' Registration Duration")
 ```
 
-## 2. Main Questions/Issues of Supporters
+## 2. Statistical Modeling
+
+### 1. Analyzing the Relationship Between Followers and other factors. 
+
+```{r}
+# Select variables for analysis. 
+user_stat <- dt_user_cld %>% 
+    select(followers, following, public_repos, duration)
+
+# Saniety Check
+user_stat %>% head(10)
+```
+
+
+```{r}
+# Unsupervised Learning: PCA
+user_pca <- prcomp(user_stat, center=TRUE, scale.=TRUE)
+print(user_pca)
+summary(user_pca)
+
+# Visualization using 3 principle components PCA
+plotly()
+```
+
+
+## 3. Main Questions/Issues of Supporters
 
 ### 1. Trending Issues. 
 
