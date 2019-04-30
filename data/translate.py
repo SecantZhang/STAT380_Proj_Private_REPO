@@ -5,7 +5,7 @@ import numpy as np
 """
 import csv
 """
-df = pd.DataFrame(pd.read_csv('seg_translate.csv'))
+df = pd.DataFrame(pd.read_csv('data/seg_translate.csv'))
 
 """
 create empty array for placeholder

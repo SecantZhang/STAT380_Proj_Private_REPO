@@ -391,6 +391,18 @@ wordcloud(words=seg_df$seg, freq=seg_df$freq,
 ```
 
 
+```{r}
+# Loading translated dataset. 
+trans <- read.table("data/translate", sep="\t")[-1,]
+seg_df <- cbind(seg_df, engl = trans$V2)
+```
+
+```{r warning=FALSE}
+# Generating word cloud (English Version)
+wordcloud(words=seg_df$engl, freq=seg_df$freq, 
+          colors=brewer.pal(8,"Dark2"), 
+          scale=c(4, 0.8))
+```
 
 
 
