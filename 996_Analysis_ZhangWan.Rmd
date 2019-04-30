@@ -26,7 +26,10 @@ library(plotly)
 
 
 # I - Introduction
+### Based on definition from Investopedia.com, Social good means "something that benefits the largest number of people in the largest possible way, such as clean air, clean water, healthcare and literacy." Social good is also referred to as the "common good." In our topic, we hope to discuss a heated issue within the community of developers. Before we go in depth of the issue, here are a couple things indicating why it's an important issue:
 
+### Overall Chinese Internet environment:
+* A couple companies have tried to enter the lucrative market of mainland China, however, many of them faced obstacles. 
 
 
 # II - Data Preprocessing
