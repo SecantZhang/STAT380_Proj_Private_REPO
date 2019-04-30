@@ -5,8 +5,17 @@ output: html_notebook
 ---
 
 ```{r}
+# Load necessary packages. 
+# Basic Data Analysis & Wrangling
 library(tidyverse)
 library(lubridate)
+
+# Library for splitting the chinese words. 
+library(jiebaRD)
+library(jiebaR)
+
+# Library for generating word cloud. 
+library(wordcloud)
 ```
 
 
@@ -61,11 +70,22 @@ dt_user_cld <- dt_user %>%
            organizations_url = as.character(organizations_url))
 
 str(dt_user_cld)
+
+# Issues dataset cleaning
+dt_issues_cld <- dt_issues %>%
+    # Drop unused features. 
+    select(created_at, body, comments, created_at, title, user.login) %>%
+    # Convert the time/date features to relative format. 
+    mutate(created_at = lubridate::ymd_hms(created_at), 
+           # Convert the factor type features to the correct format. 
+           body = as.character(body), 
+           title = as.character(title), 
+           user.login = as.character(user.login))
 ```
 
 # III - Data Analysis
 
-## 1. Supporters' Profile
+## 1. Supporters' Profile Analysis
 
 ### 1. What Companies/Universities are those programmers from?
 
@@ -288,16 +308,62 @@ dt_user_cld %>% ggplot(aes(x = duration/365)) +
     labs(y = "Frequency / Count", 
          x = "Number of Years Since Registration") +
     ggtitle("Distribution Plot of Supporters' Registration Duration")
-
-dist_reg
 ```
 
 ## 2. Main Questions/Issues of Supporters
 
-```{r}
+### 1. Trending Issues. 
 
+```{r}
+# Showing top ten issues with most comments. 
+dt_issues_cld %>% 
+    select(title, comments) %>% 
+    arrange(desc(comments)) %>%
+    head(10)
+
+# Psuedo top ten issues (translated)
+psuedo_issues <- data.frame(
+    title = c("Discussion Thread", 
+              "Any 'Working under 996, sicking in ICU' wallpapers to use?", 
+              "Afterwards, I could put 'participated in an open-source project with over 2000+ stars' on my resume", 
+              "I don't understant the law, but I'm wondering if there is any legal issue involved?", 
+              "Can this repository be in the top-ten stars list on GitHub?", 
+              "Substantial suggestions regarding the anti-996 movements.", 
+              "It's ugly that the developers taking salaries while complaining about their companies.", 
+              "Working overtime tonight, will delete the database when this repo reach over 100k stars", 
+              "Cute girl born in 1996 is looking for developer boyfriend now.", 
+              "Worship the original post"), 
+    comments = c(1243, 62, 53, 39, 37, 30, 30, 26, 25, 24)) %>%
+    mutate(title = as.character(title))
+
+psuedo_issues
 ```
 
+### 2. Text Analysis About Topics of 996 Movement.
+
+```{r}
+# Setting the word-split engine
+splitter <- worker(stop_word = "data/stopwords.txt")
+
+# Splitting the words. 
+seg <- c(splitter[dt_issues_cld$title], splitter[dt_issues_cld$body])
+seg <- seg[nchar(seg) > 1]
+# Encode the chinese word vector as UTF-8 format. 
+Encoding(seg) <- "UTF-8"
+# Extract the top 100 
+seg_df <- data.frame(seg = seg) %>%
+    group_by(seg) %>%
+    summarise(freq = n()) %>%
+    arrange(desc(freq)) %>%
+    head(100)
+
+# Generating word cloud (Chinese Version). 
+font_family <- par("family")
+par(family = "Adobe Heiti Std R")
+wordcloud(words=seg_df$seg, freq=seg_df$freq, 
+          colors=brewer.pal(8,"Dark2"), 
+          scale=c(4, 0.8))
+```
 
 
 
