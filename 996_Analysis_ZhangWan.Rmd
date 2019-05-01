@@ -1,6 +1,7 @@
 ---
-title: "996 Analysis"
-author: "Zheng Zhang, "
+title: "Anti-996 Movement GitHub Repository Analysis"
+author: "Zheng Zhang, Jiaan Wan"
+date: "April 30, 2019"
 output: html_notebook
 ---
 
@@ -26,7 +27,7 @@ library(plotly)
 
 
 # I - Introduction
-### Based on definition from Investopedia.com, Social good means "something that benefits the largest number of people in the largest possible way, such as clean air, clean water, healthcare and literacy." Social good is also referred to as the "common good." In our topic, we hope to discuss a heated issue within the community of developers. Before we go in depth of the issue, here are a couple things indicating why it's an important issue:
+Based on definition from Investopedia.com, Social good means "something that benefits the largest number of people in the largest possible way, such as clean air, clean water, healthcare and literacy." Social good is also referred to as the "common good." In our topic, we hope to discuss a heated issue within the community of developers. Before we go in depth of the issue, here are a couple things indicating why it's an important issue:
 
 ### Overall Chinese Internet environment:
 
@@ -34,12 +35,13 @@ library(plotly)
 
 * Chinese government is known for its regulation and censorship. According to an article published by New York Times, the new president hopes to use the Internet to strengthen Communist Party's role on the society. Majority of the young generation is indifferent to politics, although many are victims of censorship as well as censorship factory workers. 
 
-### From a brief introduction of how the overall Chinese Internet environment is different from the United States, and other developed countries, we will now connect to the topic of interest today: 996.ICU event. 
+From a brief introduction of how the overall Chinese Internet environment is different from the United States, and other developed countries, we will now connect to the topic of interest today: 996.ICU event. 
 
-###  996.ICU is a reference to the grueling and illegal working hours of many tech companies in China - from 9am to 9pm, 6 days a week. The name “996.ICU” came from the description in the repository, “By following the '996' work schedule, you are risking yourself getting into the ICU (Intensive Care Unit).” The event came to the peak when Jack Ma, the founder of the e-commerce giant Alibaba Group, gave the following remarks in mid-April 2019: “It is a huge blessing that we can work 996.” Alibaba owns the Amazon of China, as well as the biggest cloud computing platform in mainland. He said, “If you do not do 996 when you are young, when will you do it. If you don’t put more time and energy than others, how can you achieve the success you want?” Such remark has received controversial comments inside and outside of the country. Currently, 996.ICU repository is ranked No.2 on the Trending page for github, world's largest developer community, right after the repository that hosts all Algorithms implemented in Python. Microsoft and GitHub Workers started their own repository to support 996.ICU movement. 
-### This movement is personally significant to our team, because both of us have interacted with the companies mentioned above and have friends and families who work in Tech in China. We have witnessed the consequences caused long hours, and unproductive work in the Tech industry in China. On one hand, the Chinese overall Internet environment is different from the United States, as well as it is at least 10 years behind the U.S.. However, on the other hand, pressuring workers to work long hours would not sufficiently bridge the gap, nor would it be beneficial to technological improvement.
+996.ICU is a reference to the grueling and illegal working hours of many tech companies in China - from 9am to 9pm, 6 days a week. The name “996.ICU” came from the description in the repository, “By following the '996' work schedule, you are risking yourself getting into the ICU (Intensive Care Unit).” The event came to the peak when Jack Ma, the founder of the e-commerce giant Alibaba Group, gave the following remarks in mid-April 2019: “It is a huge blessing that we can work 996.” Alibaba owns the Amazon of China, as well as the biggest cloud computing platform in mainland. He said, “If you do not do 996 when you are young, when will you do it. If you don’t put more time and energy than others, how can you achieve the success you want?” Such remark has received controversial comments inside and outside of the country. Currently, 996.ICU repository is ranked No.2 on the Trending page for github, world's largest developer community, right after the repository that hosts all Algorithms implemented in Python. Microsoft and GitHub Workers started their own repository to support 996.ICU movement. 
 
-### For the rest of our project, we used text analysis, and supervised and unsupervised techniques to dive deep into the problem.
+This movement is personally significant to our team, because both of us have interacted with the companies mentioned above and have friends and families who work in Tech in China. We have witnessed the consequences caused long hours, and unproductive work in the Tech industry in China. On one hand, the Chinese overall Internet environment is different from the United States, as well as it is at least 10 years behind the U.S.. However, on the other hand, pressuring workers to work long hours would not sufficiently bridge the gap, nor would it be beneficial to technological improvement.
+
+For the rest of our project, we used text analysis, and supervised and unsupervised techniques to dive deep into the problem.
 
 
 # II - Data Preprocessing
@@ -210,6 +212,8 @@ company_info_agg %>% group_by(agg_education) %>%
     
 ```
 
+As we could see from the table above, most of the identified developers (with company listed in GitHub) are coming from several major IT companies such as Tencent, Baidu, Alibaba and JD. Also, several top universities that have the most number of supporters for anti-996 movements are Zhejiang University, Beijing University of Post and Telecommunications and Harbin Institute of Technology. 
+
 ### 2. What cities are those developers from? 
 
 
@@ -271,6 +275,8 @@ city_info_agg %>% group_by(agg_cities) %>%
     head(10)
 ```
 
+According to the statistics in the above table, HangZhou, the headquarter of Alibaba, have the most developers who support the anti-996 movements. Also, Beijing, headquarter of Baidu and JD also have lots of supporters. 
+
 ### 3. Summary Statistics of Supporters' Related Information. 
 
 ```{r}
@@ -289,6 +295,8 @@ dt_user_cld %>% select(followers, following, public_repos) %>%
     
 ```
 
+On average (red cube in the above graph), the number of public repositories is greater than supporters' following and greater than supporters' followers.
+
 ### 4. Distribution Plot of Supporters' Information. 
 
 ```{r}
@@ -304,6 +312,8 @@ dist_ggplot +
          y = "Count") +
     ggtitle("Distribution Plot")
 ```
+
+From the distribution plot of supporters' number of followers, we could directly see that most of the supporters have relatively low number of followers, and only a few of them have more than 20 followers. 
 
 ### 5. Distribution Plot of Supporters' Registration Duration. 
 
@@ -325,6 +335,8 @@ dt_user_cld %>% ggplot(aes(x = duration/365)) +
          x = "Number of Years Since Registration") +
     ggtitle("Distribution Plot of Supporters' Registration Duration")
 ```
+
+The average time since supporters registered the github account is 3 years. 
 
 ## 2. Statistical Modeling
 
@@ -354,13 +366,13 @@ summary(user_pca)
 
 lm <- lm(followers ~ following+public_repos+duration, data = dt_user_cld)
 summary(lm)
-# Because adjusted R-squared is very low, at 0.01508. We decided to further check linear assumptions by plotting it.
 
 plot(lm)
-# From the plots, we can tell that this data violated various linear assumption. Therefore, linear regression wouldn't work with this dataset.
+# 
 ```
 
-
+Because adjusted R-squared is very low, at 0.01508. We decided to further check linear assumptions by plotting it.
+From the plots, we can tell that this data violated various linear assumption. Therefore, linear regression wouldn't work with this dataset.
 
 ## 3. Main Questions/Issues of Supporters
 
@@ -431,15 +443,16 @@ wordcloud(words=seg_df$engl, freq=seg_df$freq,
           scale=c(4, 0.8))
 ```
 
+As we can see from the word cloud, the size of the word represents more frequency of the word. Which indicates that in the 996 repository issues section, people are talking more about Overtime, Off work, Company, Resist, Front End and jobs etc. 
 
 # IV - reference
-#### Kenton, Will. “Social Good.” Investopedia, Investopedia, 12 Mar. 2019, www.investopedia.com/terms/s/social_good.asp.
+Kenton, Will. “Social Good.” Investopedia, Investopedia, 12 Mar. 2019, www.investopedia.com/terms/s/social_good.asp.
 
-#### Wei, Shiyang. "A pilot study on the Chinese internet environment." International Conference on Advances in Education and Management. Springer, Berlin, Heidelberg, 2011.
+Wei, Shiyang. "A pilot study on the Chinese internet environment." International Conference on Advances in Education and Management. Springer, Berlin, Heidelberg, 2011.
 
-#### Yuan, Li. “Learning China's Forbidden History, So They Can Censor It.” The New York Times, The New York Times, 2 Jan. 2019, www.nytimes.com/2019/01/02/business/china-internet-censor.html.
+Yuan, Li. “Learning China's Forbidden History, So They Can Censor It.” The New York Times, The New York Times, 2 Jan. 2019, www.nytimes.com/2019/01/02/business/china-internet-censor.html.
 
-#### “Chinese Developers Use Github to Protest against Country's 996 Work Schedule.” South China Morning Post, 29 Mar. 2019, www.scmp.com/tech/start-ups/article/3003691/developers-lives-matter-chinese-software-engineers-use-github.
+“Chinese Developers Use Github to Protest against Country's 996 Work Schedule.” South China Morning Post, 29 Mar. 2019, www.scmp.com/tech/start-ups/article/3003691/developers-lives-matter-chinese-software-engineers-use-github.
 
 
 

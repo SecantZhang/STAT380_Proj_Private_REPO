@@ -16,7 +16,8 @@ output: html_notebook
 
 *Description: Report includes meaningful contributions from (at least) two different data sources that are JOINED for the analysis*
 
-(A) .Rmd Line number(s) for join operation: ```43```
+(A) .Rmd Line number(s) for join operation: 
+```72```
 
 
 
@@ -25,19 +26,19 @@ output: html_notebook
 *Description: Clear demonstration of proficiency should include proper use of 5 out of the following 6 topics from class: (+) general purpose data wrangling--e.g., filter, select mutate, summarise, arrange, group_by, etc. (+) spread & gather to stack/unstack variables (+) regular expressions (+) user-defined functions (+) loops and control flow (+) vectorized functions like the `apply` family, `purrr::map` or `dplyr::do`*
 
 (A) .Rmd Line number(s) for an example of general purpose data wrangling: 
-```39-61```
+```70-103```
 
 (B) .Rmd Line number(s) for a spread & gather (or equivalent): 
-```243```
+```284```
 
 (C) .Rmd Line number(s) for use of regular expressions: 
-```94-113```, ```127-142```
+```131-150```
 
 (D) .Rmd Line number(s) for use of user-defined functions: 
-```89```, ```122```
+```159-185```
 
 (E) .Rmd Line number(s) for use of loops and/or control flow: 
-```153```
+```190-193```
 
 (F) .Rmd Line number(s) for use of vectorized functions: 
 
@@ -47,16 +48,16 @@ output: html_notebook
 *Description: Clear demonstration of proficiency should include at least FOUR distinct and useful data visualizations that are relevant to purpose of the analysis. Include at least one effective visualization with layered data from distinct data structures--e.g., a `geom` that plots data from a secondary data frame AND another must effectively display many--3 or more--variables. All plots must demonstrate good plotting practices.*
 
 (A) .Rmd Line number(s) for visualization with layered data from distinct data structures--e.g., a `geom` that plots data from a secondary data frame: 
-```241-251```
+```283-292```
 
 (B) .Rmd Line number(s) for visualization displaying many--3 or more--variables (A, B, C, & D must be four **different** plots): 
-```259-269```
+```303-312```
 
 (C) .Rmd Line number(s) for a third visualization: 
-```285-290```
+```321-335```
 
 (D) .Rmd Line number(s) for a third visualization: 
-
+```440-442```
 
 
 
@@ -65,16 +66,16 @@ output: html_notebook
 *Description: Clear demonstration of proficiency should include proper use of 3 out of the following 4 topics from class: (+) statistical modeling/supervised learning (+) unsupervised learning (+) user-defined simulations (+) analysis of text data (+) R tools for "big data"*
 
 (A) .Rmd Line number(s) for statistical modeling/supervised learning:  
-
+```366-369```
 
 (B) .Rmd Line number(s) for unsupervised learning: 
-
+```355-358```
 
 (C) .Rmd Line number(s) for user-defined simulation(s): 
 
 
 (D) .Rmd Line number(s) for analysis of text data: 
-
+```408-428```
 
 (E) .Rmd Line number(s) for R tools for "big data": 
 
